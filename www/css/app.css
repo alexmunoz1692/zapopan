@@ -1,0 +1,144 @@
+.row{
+	margin: 0;	
+}
+
+.form-control:focus{
+	box-shadow: inset 0 0 3px #ccc;
+	border: 0!important;
+}
+
+body{
+	background-color: #171717!important;
+	font-family: 'Source Sans Pro', sans-serif;
+	padding: 0;
+	margin: 0;
+}
+
+.ui-page{
+	background-color: transparent;
+	text-shadow: none;
+}
+
+#page-inicio .ui-content{
+	padding: 0;
+}
+
+#page-inicio h1{
+	text-align: center;
+	padding: 0 20%;
+	margin-top: 50px;
+}
+
+#page-inicio h1 img{
+	max-width: 100%;
+}
+
+#menu-inicio{
+	border: 0;
+	padding: 20px 5%;
+	background-color: #FF403F;
+	position: fixed;
+	bottom: 0;
+}
+
+#menu-inicio .search{
+	padding: 0 3px;
+	margin-bottom: 20px;
+}
+
+#menu-inicio .search input{
+	background-color: #242424;
+	color: #fff;
+	border: 0;
+}
+
+#menu-inicio .search button{
+	background-color: #383838;
+	border: 0;
+	line-height: 16px;
+}
+
+#menu-inicio .search input::-webkit-input-placeholder {
+   color: #fff;
+}
+
+#menu-inicio .btn-row > div{
+	text-align: center;
+	color: #fff;
+	padding: 0 3px;
+	line-height: 1;
+}
+
+#menu-inicio .btn-row .btn{
+	background-color: #D13634;
+	margin-bottom: 10px;
+	width: 100%;
+}
+
+i[class^="icon-"]{
+	display: inline-block;
+	background: transparent url('../img/sprite-icons.png');
+	background-size: 292px;
+}
+
+i.icon-marker{
+	width: 23px;
+	height: 45px;
+	background-position: 0 -3px;
+}
+
+i.icon-bus{
+	width: 32px;
+	height: 45px;
+	background-position: -68px -2px;
+}
+
+i.icon-church{
+	width: 32px;
+	height: 45px;
+	background-position: -147px 0;
+}
+
+i.icon-file{
+	width: 30px;
+	height: 45px;
+	background-position: -225px -4px;
+}
+
+i.icon-search{
+	width: 19px;
+	height: 19px;
+	background-position: -273px -79px;
+}
+
+/*
+@media (min-width:640px){
+	i[class^="icon-"]{
+		background-size: 595px;
+	}
+	i.icon-marker{
+		width: 46px;
+		height: 81px;
+		background-position: 0 -14px;
+	}
+	i.icon-bus{
+		width: 65px;
+		height: 80px;
+		background-position: -137px -11px;
+	}
+	i.icon-church{
+		width: 65px;
+		height: 91px;
+		background-position: -294px 0;
+	}
+	i.icon-file{
+		width: 62px;
+		height: 72px;
+		background-position: -449px -20px;
+	}
+	i.icon-search{
+		width: 38px;
+		height: 38px;
+		background-position: -547px -159px;
+	}
+}*/
