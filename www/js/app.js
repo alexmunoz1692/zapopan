@@ -1,6 +1,7 @@
 var directionsDisplay;
 var directionsService = new google.maps.DirectionsService();
-    
+var map;
+
 var app = {
 
 	// Application Constructor
@@ -19,31 +20,24 @@ var app = {
 		});
 		
 		$(document).on('pagecreate', '#page-map' , function(e, ui){
-			//navigator.geolocation.getCurrentPosition(onSuccess, onError);
-			/*var onSuccess = function(position) {
-			    alert('Latitude: '          + position.coords.latitude          + '\n' +
-				  'Longitude: '         + position.coords.longitude         + '\n' +
-				  'Altitude: '          + position.coords.altitude          + '\n' +
-				  'Accuracy: '          + position.coords.accuracy          + '\n' +
-				  'Altitude Accuracy: ' + position.coords.altitudeAccuracy  + '\n' +
-				  'Heading: '           + position.coords.heading           + '\n' +
-				  'Speed: '             + position.coords.speed             + '\n' +
-				  'Timestamp: '         + position.timestamp                + '\n');
-			};*/
-			
-
-			var paint = app.getNearRoutes(20.7673,-103.41975);
-			
-			app.paintRoutes(paint);
+	
 
 			directionsDisplay = new google.maps.DirectionsRenderer();
-			
+			var zapopan = new google.maps.LatLng(20.730724, -103.447038);
 			var mapOptions = {
-			  center: new google.maps.LatLng(-34.397, 150.644),
-			  zoom: 8
-			};
+			  zoom:7,
+			  center: zapopan
+			}
 			
-			var map = new google.maps.Map(document.getElementById("map"), mapOptions);
+			map = new google.maps.Map(document.getElementById('map'), mapOptions);
+			directionsDisplay.setMap(map);
+  
+			//var paint = app.getNearRoutes(20.7673,-103.41975);
+			
+			app.paintRoutes();
+
+			
+
 		});
 		
     },
@@ -73,10 +67,6 @@ var app = {
 			break;
 		    }
 		}
-		
-		/*if (test) {
-		    //code
-		}*/
 	    }
 	    console.log(result);
 	    return result;
@@ -86,27 +76,39 @@ var app = {
     },
     
     paintRoutes: function(routes){
-	for (var i = 0; i < routes.length; i++) {
-	    var len = routes.route.length;
-	      var request = {
-		origin:routes.route[0],
-		destination:routes[len],
-		waypoints: [
-		    {
-		      location:"Joplin, MO",
-		      stopover:false
-		    },{
-		      location:"Oklahoma City, OK",
-		      stopover:false
-		    }],
+	//alert(routes);
+	//for (var i = 0; i < routes.length; i++) {
+	    //var len = routes.route.length;
+	    
+	   /*  var request = {
+		origin:"Sidney",
+		destination:"Liverpool",
 		travelMode: google.maps.TravelMode.DRIVING
 	      };
 	      directionsService.route(request, function(result, status) {
 		if (status == google.maps.DirectionsStatus.OK) {
+		    console.log("hola");
 		    directionsDisplay.setDirections(result);
 		}
 	      });
-	}
+	//} */
+	   
+	    var start = "20.67645,-103.35235";
+	    var end = "20.66383,-103.33905";
+	    var request = {
+		origin:start,
+		destination:end,
+		travelMode: google.maps.TravelMode.DRIVING
+	    };
+	    directionsService.route(request, function(response, status) {
+	      if (status == google.maps.DirectionsStatus.OK) {
+		directionsDisplay.setDirections(response);
+	      }
+	    });
+	
+	
+	
+	
 	
     },
     
