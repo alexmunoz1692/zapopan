@@ -41,25 +41,34 @@ body{
 	bottom: 0;
 }
 
-#menu-inicio .search{
+/* SEARCH INPUT */
+.search{
 	padding: 0 3px;
-	margin-bottom: 20px;
 }
 
-#menu-inicio .search input{
+.search input{
 	background-color: #242424;
 	color: #fff;
 	border: 0;
+	font-weight: 300;
 }
 
-#menu-inicio .search button{
+.search button{
 	background-color: #383838;
 	border: 0;
-	line-height: 16px;
+	line-height: 22px;
 }
 
-#menu-inicio .search input::-webkit-input-placeholder {
+.search button:hover{
+	background-color: #383838;
+}
+
+.search input::-webkit-input-placeholder {
    color: #fff;
+}
+
+#menu-inicio .search{
+	margin-bottom: 20px;
 }
 
 #menu-inicio .btn-row > div{
@@ -77,6 +86,7 @@ body{
 
 i[class^="icon-"]{
 	display: inline-block;
+	vertical-align: middle;
 	background: transparent url('../img/sprite-icons.png');
 	background-size: 292px;
 }
@@ -142,3 +152,129 @@ i.icon-search{
 		background-position: -547px -159px;
 	}
 }*/
+
+/* MAP HEADER */
+#header-map{
+	padding: 8px 0;
+}
+
+#header-map form{
+	display: inline-block;
+	width: 80%;
+	margin-left: 13%;
+}
+
+#header-map .panel-toggle{
+	background-color: transparent;
+	border: 0;
+	padding: 6px;
+	margin-top: 8px;
+}
+
+
+#header-map .panel-toggle:focus,
+#header-map .panel-toggle:active{
+	outline-color: #fff;
+}
+
+#header-map .panel-toggle .icon-bar{
+	display: block;
+	width: 22px;
+	height: 2px;
+	border-radius: 1px;
+	background-color: #fff;
+}
+
+#header-map .panel-toggle .icon-bar + .icon-bar {
+	margin-top: 4px;
+}
+
+/* MAP FOOTER */
+#footer-map, #header-map{
+	background-color: #FF403F;
+	border: 0;
+	line-height: 1;
+	z-index: 1001; /* Above panel */
+}
+
+#footer-map .brand-small{
+	background-color: #151515;
+	line-height: 50px;
+}
+
+#footer-map .brand-small img{
+	max-width: 100%;
+}
+
+#nav-footer{
+	margin-bottom: 0;
+}
+
+#nav-footer li{
+	padding: 0;
+}
+
+#nav-footer a{
+	display: block;
+	line-height: 50px;
+	padding: 0 10px;
+}
+
+#nav-footer a:hover{
+	background-color: #C73736;
+}
+
+#nav-footer i[class^="icon-"]{
+	background-size: 228px;
+}
+
+#nav-footer i.icon-marker{
+	width: 18px;
+	height: 35px;
+	background-position: 0 -44px;
+}
+
+#nav-footer i.icon-bus{
+	width: 26px;
+	height: 35px;
+	background-position: -53px -43px;
+}
+
+#nav-footer i.icon-church{
+	width: 26px;
+	height: 35px;
+	background-position: -114px -41px;
+}
+
+#nav-footer i.icon-file{
+	width: 24px;
+	height: 35px;
+	background-position: -175px -44px;
+}
+
+/* MAP */
+#page-map {
+	height: 100%;
+}
+
+#page-map .ui-content{
+	position: fixed;
+	height: 100%;
+	width: 100%;
+	padding: 0;
+	left: 0;
+}
+
+#map{
+	height: 100%;
+}
+
+/* PANEL */
+
+#panel{
+	background: rgba(0,0,0,0.85);
+	color: #fff;
+	width: 90%;
+	padding: 60px 10px;
+	top: 0;
+}
