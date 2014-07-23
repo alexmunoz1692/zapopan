@@ -39,19 +39,19 @@
             </form>
             <div class="row btn-row">
                 <div class="col-xs-3">
-                	<a href="#page-map" class="btn" data-rel="nearby" data-transition="slide"><i class="icon-marker"></i></a>
+                	<a href="#page-map" class="btn" data-map="nearby" data-transition="slide"><i class="icon-marker"></i></a>
                     Cerca de mí
                	</div>
                 <div class="col-xs-3">
-                	<a href="#page-map" class="btn"><i class="icon-bus"></i></a>
+                	<a href="#page-map" class="btn" data-map="routes" data-transition="slide"><i class="icon-bus"></i></a>
                     Rutas
                	</div>
                 <div class="col-xs-3">
-                	<a href="#page-map" class="btn"><i class="icon-church"></i></a>
+                	<a href="#page-map" class="btn" data-map="places" data-transition="slide"><i class="icon-church"></i></a>
                     Lugares turísticos
                	</div>
                 <div class="col-xs-3">
-                	<a href="#page-map" class="btn"><i class="icon-file"></i></a>
+                	<a href="#page-map" class="btn" data-map="actions" data-transition="slide"><i class="icon-file"></i></a>
                     Trámites
                	</div>
             </div>
@@ -83,7 +83,10 @@
 	</div>
 
 	<div role="main" class="ui-content">
-		<div id="map"></div>
+		<div class="map" id="map-nearby"></div>
+        <div class="map" id="map-routes"></div>
+        <div class="map" id="map-places"></div>
+        <div class="map" id="map-actions"></div>
 	</div>
 
 	<div data-role="footer" data-position="fixed" data-tap-toggle="false" id="footer-map">
@@ -93,10 +96,10 @@
             </div>
             <div class="col-xs-8 text-center">
             	<ul class="list-inline" id="nav-footer">
-                	<li><a href="#"><i class="icon-marker"></i></a></li>
-                    <li><a href="#"><i class="icon-bus"></i></a></li>
-                    <li><a href="#"><i class="icon-church"></i></a></li>
-                    <li><a href="#"><i class="icon-file"></i></a></li>
+                	<li><a href="#" data-map="nearby" data-toggle="map"><i class="icon-marker"></i></a></li>
+                    <li><a href="#" data-map="routes" data-toggle="map"><i class="icon-bus"></i></a></li>
+                    <li><a href="#" data-map="places" data-toggle="map"><i class="icon-church"></i></a></li>
+                    <li><a href="#" data-map="actions" data-toggle="map"><i class="icon-file"></i></a></li>
                 </ul>
             </div>
         </div>

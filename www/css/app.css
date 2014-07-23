@@ -263,9 +263,11 @@ i.icon-search{
 	width: 100%;
 	padding: 0;
 	left: 0;
+	
+	overflow: hidden;
 }
 
-#map{
+.map{
 	height: 100%;
 }
 
