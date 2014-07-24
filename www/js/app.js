@@ -84,25 +84,25 @@ var app = {
 				maps[key] = map;
 			});
 			
-			app.populateRoutes( function (){
+			/*app.populateRoutes( function (){
 			    /*var near = app.getNear(20.7673,-103.41975, routesArray );
 			    app.paintRoutes(near);
 			    app.listRoutes(near);*/
-			    
+			    /*
 			    console.log(routesArray);
-			});
+			}); */
 			
 			
 			app.populatePlaces( function (){
-			    
 			    var near = app.getNear(20.7673,-103.41975, placesArray );
-			    console.log(near);
+			    app.markElements(near);			    
+
 			});
 			
 						
-			app.populateActions( function (){
-			    console.log(actionsArray);
-			});
+			/*app.populateActions( function (){
+
+			});*/
 
 					  
 
@@ -164,13 +164,16 @@ var app = {
     },
     
    markElements: function(elements){
+    
+    console.log(elements);
 	
 	for (var i = 0; i < elements.length; i++) {
-						
+	    						
 	var marker = new google.maps.Marker({
-	    position: new google.maps.LatLng (elements[i].points[0].lan, elements[i].points[0].lng),
+	    position: new google.maps.LatLng (elements[i].points[0].lat, elements[i].points[0].lng),
 	    map: maps.nearby,
-	    title: 'test',
+	    animation: google.maps.Animation.DROP,
+	    title: elements[i].name,
 	});
 				
 	}
