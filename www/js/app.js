@@ -1,15 +1,22 @@
-var directionsService = new google.maps.DirectionsService();
 var activeMap = 'nearby';
 var syncingMaps = false;
 var syncedMaps = 0;
-var maps = {nearby: null, routes: null, places: null, actions: null};
+var maps = {
+	nearby: {gmap: null, markers: [], infowindow: null, directionsService: null, directionsRenderer: null, $panel: null}, 
+	routes: {gmap: null, markers: [], infowindow: null, directionsService: null, directionsRenderer: null, $panel:null}, 
+	places: {gmap: null, markers: [], infowindow: null, directionsService: null, directionsRenderer: null, $panel:null}, 
+	actions: {gmap: null, markers: [], infowindow: null, directionsService: null, directionsRenderer: null, $panel: null}
+};
 var mapsCount = Object.keys(maps).length;
+var geoMarker;
+var $panel_container;
 var requestArray = [];
 var renderArray = [];
 var routesArray = [];
 var placesArray = [];
 var actionsArray = [];
 var colorsArray = ["#0a89ea", "#e6da0c", "#1abf47" ,"#ff4041" ,"#0d9fe7" ,"#891abe" ,"#3bfe8c", "#e66a0d"];
+var panelTitles = {nearby: 'Cerca de mí', routes: 'Rutas', places: 'Lugares turísticos', actions: 'Trámites'};
 
 var app = {
 
@@ -36,12 +43,40 @@ var app = {
 				
 		$(document).on('pagecreate', '#page-map' , function(e, ui){
 			
+			$panel_container = $('#panel');
+			
+			$panel_container.on('click', 'a', function(){
+				
+				var $this = $(this);
+				var request = {
+					origin: geoMarker.getPosition(),
+					destination:new google.maps.LatLng($this.data('lat'), $this.data('lng')),
+					travelMode: google.maps.TravelMode.DRIVING
+				};
+				
+				console.log(request);
+				
+				var i = $panel_container.find('a').index($this);		  
+				maps[activeMap].directionsService.route(request, function(result, status) {
+					if(status == google.maps.DirectionsStatus.OK) {
+					  maps[activeMap].directionsRenderer.setDirections(result);
+					  google.maps.event.trigger(maps[activeMap].markers[i], 'click');
+					}
+				});
+				
+				$panel_container.panel("close");
+				return false;
+			});
+			
 			$('#footer-map a[data-toggle="map"]').click(function(){
 				var toshow = $(this).data('map');
 				var $toShow = $('#map-'+ toshow)
 				$('.map:visible').not($toShow).slideUp(function(){
 					$toShow.slideDown();
 					activeMap = toshow;
+					geoMarker.setMap(null);
+					geoMarker.setMap(maps[activeMap].gmap);
+					$panel_container.html(maps[activeMap].$panel);
 				});
 				
 
@@ -49,20 +84,22 @@ var app = {
 			
 			var zapopan = new google.maps.LatLng(20.730724, -103.447038);
 			var mapOptions = {
-			  zoom: 15,
-			  minZoom: 10,
-			  center: zapopan
+				zoom: 15,
+				minZoom: 10,
+				center: zapopan
 			}
 			
-			//maps[map] = new google.maps.Map(document.getElementById('map-'+map), mapOptions);
 			console.log('activeMap:', activeMap);
 			
 			$.each(maps, function(key, value){
 				var $cont = $('#map-'+key);
 				var map = new google.maps.Map($cont.get(0), mapOptions);
 				
+				if(key == activeMap){
+					geoMarker = new GeolocationMarker(map);
+				}
+				
 				google.maps.event.addListenerOnce(map, 'idle', function(){
-					console.log('loaded:', map);
 					if(key != activeMap){
 						$cont.hide();
 					}
@@ -75,34 +112,36 @@ var app = {
 							if(syncedMaps == mapsCount-1){
 								syncedMaps = 0;
 								syncingMaps = false;
-								console.log('finished syncing');
 							}
 						}
 					});
 				});
 								
-				maps[key] = map;
+				maps[key].gmap = map;
+				maps[key].directionsRenderer = new google.maps.DirectionsRenderer({suppressMarkers:true});
+				maps[key].directionsRenderer.setMap(maps[key].gmap);
+				maps[key].directionsService = new google.maps.DirectionsService();
 			});
 			
-			/*app.populateRoutes( function (){
-			    /*var near = app.getNear(20.7673,-103.41975, routesArray );
-			    app.paintRoutes(near);
-			    app.listRoutes(near);*/
-			    /*
-			    console.log(routesArray);
-			}); */
+			app.populateRoutes( function (){
+			    app.paintRoutes(routesArray, 'routes');
+			    app.buildPanel(routesArray, 'routes');
+			});
 			
 			
 			app.populatePlaces( function (){
 			    var near = app.getNear(20.7673,-103.41975, placesArray );
-			    app.markElements(near);			    
-
+			    app.markElements(near, 'nearby');
+				app.buildPanel(near, 'nearby');
+				
+				app.markElements(placesArray, 'places');
+				app.buildPanel(placesArray, 'places');
 			});
-			
 						
-			/*app.populateActions( function (){
-
-			});*/
+			app.populateActions( function (){
+				app.markElements(actionsArray, 'actions');
+				app.buildPanel(actionsArray, 'actions');
+			});
 
 					  
 
@@ -127,25 +166,21 @@ var app = {
     },
 	
 	syncMaps: function(toMap){
-		console.log('syncing');
 		syncingMaps = true;
 		$.each(maps, function(key, map){
-			if(map !== toMap){
-				map.setCenter(toMap.getCenter());
-				map.setZoom(toMap.getZoom());
-			}else{
-				console.log('same map');
+			if(map.gmap !== toMap){
+				map.gmap.setCenter(toMap.getCenter());
+				map.gmap.setZoom(toMap.getZoom());
 			}
 		});
-		//syncingMaps = false;
 	},
     
     getNear: function(lat, lng, elements){
 		var result = [];
 		    $.each(elements, function(key, obj) {
 			for( var j = 0; j < obj.points.length ; j++){
-				if (app.calculateDistance( obj.points[j].lat, obj.points[j].lng  , lat , lng) > 0.05) {
-				result.push(obj);
+				if (app.calculateDistance( obj.points[j].lat, obj.points[j].lng  , lat , lng) < 5) {
+					result.push(obj);
 				break;
 				}  
 			}
@@ -154,34 +189,61 @@ var app = {
     },
     
     
-    listRoutes: function(routes){
-	
-	for (var i = 0; i < routes.length; i++) {
-	    	    
-	    $('#panel').append(routes[i].name);
-	} 
-    
-    },
-    
-   markElements: function(elements){
-    
-    console.log(elements);
-	
-	for (var i = 0; i < elements.length; i++) {
-	    						
-	var marker = new google.maps.Marker({
-	    position: new google.maps.LatLng (elements[i].points[0].lat, elements[i].points[0].lng),
-	    map: maps.nearby,
-	    animation: google.maps.Animation.DROP,
-	    title: elements[i].name,
-	});
+   markElements: function(elements, mapIndex){
+	   $.each(elements, function(index, element){
+		   var marker = new google.maps.Marker({
+			   position: new google.maps.LatLng (element.points[0].lat, element.points[0].lng),
+			   map: maps[mapIndex].gmap,
+			   animation: mapIndex == 'nearby' ? google.maps.Animation.DROP : null,
+			   title: element.name
+		   });
+		   
+		   google.maps.event.addListener(marker, 'click', function() {
+			 if (maps[mapIndex].infowindow) 
+				maps[mapIndex].infowindow.close();
 				
-	}
-		
-
+			 maps[mapIndex].infowindow = new google.maps.InfoWindow({
+				content: '<strong>'+(element.place ? element.place : element.name)+'</strong>'
+							+(element.address ? '<address>'+element.address+'</address>' : '')
+			 });
+			 
+			 maps[mapIndex].infowindow.open(maps[mapIndex].gmap,marker);
+		   });
+		   
+		   maps[mapIndex].markers.push(marker);
+		   
+	   });
     },
+	
+	buildPanel: function(elements, mapIndex){
+		var $panel = $('<div id="panel-'+mapIndex+'" />');
+		$panel.append('<h1 class="panel-title">'+panelTitles[mapIndex]+'</h1>');
+		
+		var $list = $('<ul class="list-panel '+mapIndex+'">').appendTo($panel);
+		
+		for (var i = 0; i < elements.length; i++) {
+			var $li = $('<li>');
+			var $a = $('<a href="#">')
+							 .attr('data-lat', elements[i].points[0].lat)
+							 .attr('data-lng', elements[i].points[0].lng)
+							 .html(elements[i].name)
+							 .append($('<p class="description">').html(elements[i].description))
+							 .append($('<p class="service-place">').html(elements[i].place))
+							 .appendTo($li);
+			$li.appendTo($list);	
+	   }
+	   
+	   var $links = $panel.find('a');
+	   
+	   maps[mapIndex].$panel = $panel;
+	   
+	   if(mapIndex == activeMap){
+	       $panel_container.html($panel);
+	   }
+		
+	},
     
-    paintRoutes: function(routes){
+    paintRoutes: function(routes, mapIndex){
 	
 		for (var i = 0; i < routes.length; i++) {
 			
@@ -210,17 +272,17 @@ var app = {
 		}
 		
 		if (requestArray){ 
-		    app.processRequests();
+		    app.processRequests(mapIndex);
 		}
     },
     
-    processRequests:function(){
+    processRequests:function(mapIndex){
         // Counter to track request submission and process one at a time;
         var i = 0;
 
         // Used to submit the request 'i'
         function submitRequest(){
-            directionsService.route(requestArray[i].request, directionResults);
+            maps[mapIndex].directionsService.route(requestArray[i].request, directionResults);
         }
 
         // Used as callback for the above request for current 'i'
@@ -229,12 +291,12 @@ var app = {
                 
                 // Create a unique DirectionsRenderer 'i'
                 renderArray[i] = new google.maps.DirectionsRenderer();
-                renderArray[i].setMap(maps.nearby);
+                renderArray[i].setMap(maps[mapIndex].gmap);
 
                 // Some unique options from the colorArray so we can see the routes
                 renderArray[i].setOptions({
                     preserveViewport: true,
-                    suppressInfoWindows: true,
+                    //suppressInfoWindows: true,
                     polylineOptions: {
                         strokeWeight: 4,
                         strokeOpacity: 0.8,
@@ -253,7 +315,7 @@ var app = {
                 renderArray[i].setDirections(result);
                 // and start the next request
 		
-		nextRequest();
+			nextRequest();
             }
 
         }
@@ -308,7 +370,8 @@ var app = {
     populateActions:function (callback){	
 	$.getJSON("js/storage/actions.json", function(data) {
 	    $.each(data, function(key, val) {
-		actionsArray.push(val);
+			if(actionsArray.length < 50)
+				actionsArray.push(val);
 	    });
 	    callback();
 	});	

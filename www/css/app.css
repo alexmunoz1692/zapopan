@@ -277,6 +277,43 @@ i.icon-search{
 	background: rgba(0,0,0,0.85);
 	color: #fff;
 	width: 90%;
-	padding: 60px 10px;
+	padding: 60px 0;
 	top: 0;
+}
+
+#panel .panel-title{
+	border-bottom: solid 1px #fff;
+	padding-bottom: 0.5em;
+	margin: 0 10px;
+	font-size: 1.2em;
+}
+
+#panel .list-panel{
+	padding: 0;
+	margin: 0;
+}
+
+#panel .list-panel li{
+	list-style: none;
+}
+
+#panel .list-panel li a{
+	display: block;
+	padding: 10px;
+	color: #fff;
+	font-size: 1em;
+}
+
+#panel .list-panel li a:hover{
+	text-decoration: none;
+	background-color: #000;
+}
+
+#panel .list-panel li a p{
+	font-size: 80%;
+	color: #999;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+	margin-bottom: 0;
 }
